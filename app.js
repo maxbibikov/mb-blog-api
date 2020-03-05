@@ -43,11 +43,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use(
-  '/posts',
-  passport.authenticate('jwt', { session: false }),
-  postsRouter
-);
+app.use('/posts', postsRouter);
 app.use(
   '/categories',
   passport.authenticate('jwt', { session: false }),

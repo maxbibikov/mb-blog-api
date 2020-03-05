@@ -11,7 +11,6 @@ const User = require('../models/user');
 
 // custom extractor for jwt token from cookie
 const cookieExtractor = (req) => {
-  console.log(' req.cookies: ', req.signedCookies['jwt']);
   if (!req || !req.signedCookies) {
     return null;
   }
@@ -50,7 +49,6 @@ passport.use(
       secretOrKey: process.env.JWT_SECRET,
     },
     (jwt_payload, done) => {
-      console.log('jwt_payload: ', jwt_payload);
       const userId = jwt_payload.id;
 
       User.findOne({ _id: userId })
