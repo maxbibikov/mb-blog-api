@@ -55,7 +55,9 @@ passport.use(
         .then((user) => {
           if (!user) {
             return done(null, false, {
-              message: 'Incorrect username or password.',
+              error: {
+                message: 'Incorrect username or password.',
+              },
             });
           }
 
@@ -83,17 +85,17 @@ router.post('/login', [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.json({ errors: errors.array() });
+      return res.json({ errors: errors.array({ onlyFirstError: true }) });
     }
     next();
   },
   (req, res, next) =>
-    passport.authenticate('local', { session: false }, (err, user, info) => {
+    passport.authenticate('local', { session: false }, (err, user) => {
       if (err) {
         return next(err);
       }
       if (!user) {
-        res.status(400).json({ message: 'Incorrect username or password' });
+        return res.status(400).end('Incorrect username or password');
       }
 
       req.login(user, { session: false }, (err) => {
