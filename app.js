@@ -6,6 +6,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+// Production
+const compression = require('compression');
+const helmet = require('helmet');
+
 // Routers
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
@@ -34,12 +38,15 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(passport.initialize());
+// Compress all routes
+app.use(compression());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
