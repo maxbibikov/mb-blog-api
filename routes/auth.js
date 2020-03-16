@@ -119,13 +119,12 @@ router.post('/login', [
           process.env.JWT_SECRET
         );
 
-        res.cookie('jwt', token, {
+        return res.status(201).cookie('jwt', token, {
           httpOnly: true, // to disable accessing cookie via client side js
           //secure: true, // to force https (if you use it)
           maxAge: 86400000, // ttl in ms (remove this option and cookie will die when browser is closed)
           signed: true, // if you use the secret with cookieParser
         });
-        return res.sendStatus(200);
       });
     })(req, res),
 ]);
