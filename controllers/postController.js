@@ -4,6 +4,9 @@ const { check, validationResult } = require('express-validator');
 // Models
 const Post = require('../models/post');
 
+// Utils
+const { generateSlug, getIdFromSlug } = require('../utils');
+
 // GET request for post list
 exports.post_list_get = (req, res) => {
   return Post.find({})
@@ -66,6 +69,8 @@ exports.post_create = [
       category,
     });
 
+    post.slug = generateSlug(post.title, post._id);
+
     return post
       .save()
       .then((newPost) => res.json({ post: newPost }))
@@ -80,6 +85,8 @@ exports.post_update = [
     .notEmpty()
     .isString()
     .isLength({ min: 5, max: 50 })
+    .matches(/^[a-zA-Z0-9 ]+$/)
+    .withMessage('Title should contain only letters')
     .trim()
     .escape(),
   check('description', 'Description is not valid')
@@ -118,10 +125,12 @@ exports.post_update = [
       return res.json({ errors: errors.array() });
     }
     const { title, description, text, picture, published, category } = req.body;
-    const { postId } = req.params;
+    const { postSlug } = req.params;
+    const postId = getIdFromSlug(postSlug);
 
     const post = new Post({
       _id: postId,
+      slug: generateSlug(title, postId),
       title,
       description,
       text,
@@ -139,21 +148,26 @@ exports.post_update = [
 ];
 
 exports.post_get = (req, res) => {
-  const { postId } = req.params;
+  const { postSlug } = req.params;
 
-  return Post.findOne({ _id: postId })
+  return Post.findOne({ slug: postSlug })
     .populate('category')
     .exec()
-    .then((post) => res.json(post))
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ error: 'Post Not Found' });
+      }
+      return res.json(post);
+    })
     .catch((error) => res.json({ error: error.message }));
 };
 
 exports.post_delete = [
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    const { postId } = req.params;
+    const { postSlug } = req.params;
 
-    return Post.findOneAndRemove({ _id: postId })
+    return Post.findOneAndRemove({ _id: getIdFromSlug(postSlug) })
       .exec()
       .then((removedPost) => res.json(removedPost))
       .catch((error) => res.json({ error: error.message }));

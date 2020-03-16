@@ -1,17 +1,21 @@
 const passport = require('passport');
 const { check, param, validationResult } = require('express-validator');
 
+// Utils
+const { getIdFromSlug } = require('../utils');
+
 // Models
 const Comment = require('../models/comment');
 
 exports.comment_list_get = [
-  param('postId', 'Param postId is not valid')
+  param('postSlug', 'Param postId is not valid')
     .isString()
     .notEmpty()
     .trim(),
   (req, res) => {
     const errors = validationResult(req);
-    const { postId } = req.params;
+    const { postSlug } = req.params;
+    const postId = getIdFromSlug(postSlug);
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array() });
@@ -45,7 +49,7 @@ exports.comment_get = [
 ];
 
 exports.comment_create = [
-  param('postId', 'Param postId is not valid')
+  param('postSlug', 'Param postSlug is not valid')
     .isString()
     .notEmpty()
     .trim(),
@@ -65,8 +69,9 @@ exports.comment_create = [
     .escape(),
   (req, res) => {
     const errors = validationResult(req);
-    const { postId } = req.params;
+    const { postSlug } = req.params;
     const { name, text } = req.body;
+    const postId = getIdFromSlug(postSlug);
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array() });
