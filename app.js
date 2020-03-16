@@ -37,9 +37,15 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 const app = express();
+const corsWhitelist = process.env.CORS_WHITELIST.split(',');
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: corsWhitelist,
+    credentials: true,
+  })
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
