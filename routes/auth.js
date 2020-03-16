@@ -85,7 +85,9 @@ router.post('/login', [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.json({ errors: errors.array({ onlyFirstError: true }) });
+      return res
+        .status(422)
+        .json({ errors: errors.array({ onlyFirstError: true }) });
     }
     next();
   },
@@ -95,7 +97,9 @@ router.post('/login', [
         return next(err);
       }
       if (!user) {
-        return res.status(400).end('Incorrect username or password');
+        return res
+          .status(400)
+          .json({ error: { message: 'Incorrect username or password' } });
       }
 
       req.login(user, { session: false }, (err) => {
