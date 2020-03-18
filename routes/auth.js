@@ -122,7 +122,7 @@ router.post('/login', [
         return res
           .cookie('jwt', token, {
             httpOnly: true, // to disable accessing cookie via client side js
-            secure: process.env.NODE_ENV === 'production', // to force https
+            // secure: process.env.NODE_ENV === 'production', // to force https
             maxAge: 86400000, // ttl in ms (remove this option and cookie will die when browser is closed)
             signed: true, // if you use the secret with cookieParser
           })
