@@ -126,9 +126,19 @@ router.post('/login', [
             maxAge: 86400000, // ttl in ms (remove this option and cookie will die when browser is closed)
             signed: true, // if you use the secret with cookieParser
           })
-          .sendStatus(201);
+          .status(201)
+          .json({ user });
       });
     })(req, res),
 ]);
+
+// authorize with jwt cookie if exist
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    return res.status(200).json({ success: true });
+  }
+);
 
 module.exports = router;
