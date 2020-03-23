@@ -41,7 +41,7 @@ exports.post_create = [
     .trim()
     .escape(),
   check('published', 'Published is not valid')
-    .isString()
+    .isBoolean()
     .trim()
     .escape(),
   check('category', 'Published is not valid')
@@ -64,7 +64,7 @@ exports.post_create = [
       description,
       text,
       picture,
-      published: Boolean(published),
+      published,
       user: req.user.id,
       category,
     });
@@ -109,10 +109,10 @@ exports.post_update = [
     .trim()
     .escape(),
   check('published', 'Published is not valid')
-    .isString()
+    .isBoolean()
     .trim()
     .escape(),
-  check('category', 'Published is not valid')
+  check('category', 'Category is not valid')
     .exists()
     .notEmpty()
     .isString()
@@ -135,7 +135,7 @@ exports.post_update = [
       description,
       text,
       picture,
-      published: Boolean(published),
+      published,
       user: req.user.id,
       category,
       modified: new Date().toUTCString(),
