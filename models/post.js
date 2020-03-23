@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
-  slug: { type: String, required: true, minlength: 5, maxlength: 70 },
-  title: { type: String, required: true, minlength: 5, maxlength: 50 },
+  slug: { type: String, required: true, minlength: 5, maxlength: 200 },
+  title: { type: String, required: true, minlength: 5, maxlength: 100 },
   description: { type: String, required: true, minlength: 10, maxlength: 300 },
   text: { type: String, required: true, minlength: 10, maxlength: 3000 },
   created: { type: Date, default: new Date().toUTCString() },

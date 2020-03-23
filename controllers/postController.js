@@ -21,7 +21,7 @@ exports.post_create = [
     .exists()
     .notEmpty()
     .isString()
-    .isLength({ min: 5, max: 50 })
+    .isLength({ min: 5, max: 100 })
     .trim(),
   check('description', 'Description is not valid')
     .exists()
