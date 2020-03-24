@@ -44,7 +44,7 @@ exports.post_create = [
     .isBoolean()
     .trim()
     .escape(),
-  check('category', 'Published is not valid')
+  check('category', 'Category is not valid')
     .exists()
     .notEmpty()
     .isString()

@@ -116,14 +116,15 @@ router.post('/login', [
             lastName: user.lastName,
             role: user.role,
           },
-          process.env.JWT_SECRET
+          process.env.JWT_SECRET,
+          { expiresIn: '12h' }
         );
 
         return res
           .cookie('jwt', token, {
             httpOnly: true, // to disable accessing cookie via client side js
             // secure: process.env.NODE_ENV === 'production', // to force https
-            maxAge: 86400000, // ttl in ms (remove this option and cookie will die when browser is closed)
+            maxAge: 43200000, // 12h ttl in ms (remove this option and cookie will die when browser is closed)
             signed: true, // if you use the secret with cookieParser
           })
           .status(201)
@@ -133,12 +134,27 @@ router.post('/login', [
 ]);
 
 // authorize with jwt cookie if exist
-router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
+router.post('/', (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, function(err, user) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: { status: 401, message: 'Not authorized' } });
+    }
     return res.status(200).json({ success: true });
-  }
-);
+  })(req, res, next);
+});
+
+// logout user by removing existing jwt cookie
+// TODO: invalidate jwt token (token blacklist stored in redis)
+router.post('/logout', (req, res) => {
+  return res
+    .clearCookie('jwt')
+    .status(200)
+    .json({ ok: true });
+});
 
 module.exports = router;
