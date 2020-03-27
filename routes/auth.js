@@ -128,7 +128,13 @@ router.post('/login', [
             signed: true, // if you use the secret with cookieParser
           })
           .status(201)
-          .json({ user });
+          .json({
+            id: user._id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+          });
       });
     })(req, res),
 ]);
