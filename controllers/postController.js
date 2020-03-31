@@ -9,7 +9,7 @@ const { generateSlug, getIdFromSlug } = require('../utils');
 
 // GET request for post list
 exports.post_list_get = (req, res) => {
-  return Post.find({})
+  return Post.find({}).sort('field -created')
     .exec()
     .then((posts) => res.json(posts))
     .catch((error) => res.json({ error: error.message }));

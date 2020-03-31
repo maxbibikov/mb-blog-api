@@ -61,7 +61,13 @@ passport.use(
             });
           }
 
-          return done(null, { id: user._id });
+          return done(null, {
+            id: user._id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+          });
         })
         .catch((err) => done(err, false));
     }
@@ -142,6 +148,7 @@ router.post('/login', [
 // authorize with jwt cookie if exist
 router.post('/', (req, res, next) => {
   passport.authenticate('jwt', { session: false }, function(err, user) {
+    console.log('user: ', user);
     if (err) {
       return next(err);
     }
@@ -150,7 +157,7 @@ router.post('/', (req, res, next) => {
         .status(401)
         .json({ error: { status: 401, message: 'Not authorized' } });
     }
-    return res.status(200).json({ success: true });
+    return res.status(200).json(user);
   })(req, res, next);
 });
 
