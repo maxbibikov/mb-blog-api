@@ -84,7 +84,7 @@ exports.post_update = [
     .exists()
     .notEmpty()
     .isString()
-    .isLength({ min: 5, max: 50 })
+    .isLength({ min: 5, max: 100 })
     .matches(/^[a-zA-Z0-9 ]+$/)
     .withMessage('Title should contain only letters')
     .trim()

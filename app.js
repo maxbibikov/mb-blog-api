@@ -57,10 +57,6 @@ app.use(compression());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/posts', postsRouter);
-app.use(
-  '/categories',
-  passport.authenticate('jwt', { session: false }),
-  categoriesRouter
-);
+app.use('/categories', categoriesRouter);
 
 module.exports = app;
