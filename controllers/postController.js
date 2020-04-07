@@ -1,6 +1,6 @@
 const passport = require('passport');
 const { check, validationResult } = require('express-validator');
-
+const axios = require('axios');
 // Models
 const Post = require('../models/post');
 
@@ -9,7 +9,8 @@ const { generateSlug, getIdFromSlug } = require('../utils');
 
 // GET request for post list
 exports.post_list_get = (req, res) => {
-  return Post.find({}).sort('field -created')
+  return Post.find({})
+    .sort('field -created')
     .exec()
     .then((posts) => res.json(posts))
     .catch((error) => res.json({ error: error.message }));
@@ -40,10 +41,7 @@ exports.post_create = [
     .isString()
     .trim()
     .escape(),
-  check('published', 'Published is not valid')
-    .isBoolean()
-    .trim()
-    .escape(),
+  check('published', 'Published is not valid').isBoolean().trim().escape(),
   check('category', 'Category is not valid')
     .exists()
     .notEmpty()
@@ -73,7 +71,22 @@ exports.post_create = [
 
     return post
       .save()
-      .then((newPost) => res.json({ post: newPost }))
+      .then((newPost) => {
+        if (process.env.NODE_ENV === 'production') {
+          // Trigger netlify deploy web-hook for blog react-static website
+          return axios
+            .post(
+              'https://api.netlify.com/build_hooks/5e8c5f66e2e8848c8cf28c17'
+            )
+            .then(() => {
+              return res.json(newPost);
+            })
+            .catch((error) => {
+              return console.error(`Deploy web-hook error ${error.message}`);
+            });
+        }
+        return res.json(newPost);
+      })
       .catch((error) => res.json({ error: error.message }));
   },
 ];
@@ -108,10 +121,7 @@ exports.post_update = [
     .isString()
     .trim()
     .escape(),
-  check('published', 'Published is not valid')
-    .isBoolean()
-    .trim()
-    .escape(),
+  check('published', 'Published is not valid').isBoolean().trim().escape(),
   check('category', 'Category is not valid')
     .exists()
     .notEmpty()
@@ -142,7 +152,22 @@ exports.post_update = [
     });
 
     return Post.findOneAndUpdate({ _id: post._id }, post)
-      .then((updatedPost) => res.json(updatedPost))
+      .then((updatedPost) => {
+        if (process.env.NODE_ENV === 'production') {
+          // Trigger netlify deploy web-hook for blog react-static website
+          return axios
+            .post(
+              'https://api.netlify.com/build_hooks/5e8c5f66e2e8848c8cf28c17'
+            )
+            .then(() => {
+              return res.json(updatedPost);
+            })
+            .catch((error) => {
+              return console.error(`Deploy web-hook error ${error.message}`);
+            });
+        }
+        return res.json(updatedPost);
+      })
       .catch((error) => res.json({ error: error.message }));
   },
 ];
@@ -169,7 +194,22 @@ exports.post_delete = [
 
     return Post.findOneAndRemove({ _id: getIdFromSlug(postSlug) })
       .exec()
-      .then((removedPost) => res.json(removedPost))
+      .then((removedPost) => {
+        if (process.env.NODE_ENV === 'production') {
+          // Trigger netlify deploy web-hook for blog react-static website
+          return axios
+            .post(
+              'https://api.netlify.com/build_hooks/5e8c5f66e2e8848c8cf28c17'
+            )
+            .then(() => {
+              return res.json(removedPost);
+            })
+            .catch((error) => {
+              return console.error(`Deploy web-hook error ${error.message}`);
+            });
+        }
+        res.json(removedPost);
+      })
       .catch((error) => res.json({ error: error.message }));
   },
 ];
