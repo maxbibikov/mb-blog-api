@@ -8,10 +8,7 @@ const { getIdFromSlug } = require('../utils');
 const Comment = require('../models/comment');
 
 exports.comment_list_get = [
-  param('postSlug', 'Param postId is not valid')
-    .isString()
-    .notEmpty()
-    .trim(),
+  param('postSlug', 'Param postId is not valid').isString().notEmpty().trim(),
   (req, res) => {
     const errors = validationResult(req);
     const { postSlug } = req.params;
@@ -21,7 +18,7 @@ exports.comment_list_get = [
       return res.json({ errors: errors.array() });
     }
 
-    return Comment.find({ post: postId })
+    return Comment.find({ post: postId }).sort('field -date')
       .exec()
       .then((comments) => res.json(comments))
       .catch((error) => res.json({ error: error.message }));
@@ -49,10 +46,7 @@ exports.comment_get = [
 ];
 
 exports.comment_create = [
-  param('postSlug', 'Param postSlug is not valid')
-    .isString()
-    .notEmpty()
-    .trim(),
+  param('postSlug', 'Param postSlug is not valid').isString().notEmpty().trim(),
   check('name', 'Name is required')
     .isString()
     .notEmpty()
@@ -81,6 +75,7 @@ exports.comment_create = [
       post: postId,
       name,
       text,
+      date: new Date().toUTCString(),
     });
 
     return comment

@@ -65,6 +65,7 @@ exports.post_create = [
       published,
       user: req.user.id,
       category,
+      date: new Date().toUTCString(),
     });
 
     post.slug = generateSlug(post.title, post._id);
