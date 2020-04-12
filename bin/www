@@ -80,7 +80,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-console.log('TEST! ENV VARS: ', process.env);
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string'
