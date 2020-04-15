@@ -94,11 +94,12 @@ router.post('/login', [
     }
     next();
   },
-  (req, res, next) =>
-    passport.authenticate('local', { session: false }, (err, user) => {
+  (req, res) =>
+    passport.authenticate('local', { session: false }, (error, user) => {
       console.log('user local: ', user);
-      if (err) {
-        return next(err);
+      if (error) {
+        console.log('Passport authenticate error: ', error);
+        return res.status(404).json(error);
       }
       if (!user) {
         return res
@@ -106,9 +107,9 @@ router.post('/login', [
           .json({ error: { message: 'Incorrect username or password' } });
       }
 
-      req.login(user, { session: false }, (err) => {
-        if (err) {
-          return next(err);
+      req.login(user, { session: false }, (error) => {
+        if (error) {
+          return res.status(404).json(error);
         }
 
         // Generate jwt token for user and return it in response
@@ -145,10 +146,10 @@ router.post('/login', [
 
 // authorize with jwt cookie if exist
 router.post('/', (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, function (err, user) {
+  passport.authenticate('jwt', { session: false }, function (error, user) {
     console.log('user: ', user);
-    if (err) {
-      return next(err);
+    if (error) {
+      return res.status(404).json(error);
     }
     if (!user) {
       return res
