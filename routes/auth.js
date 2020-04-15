@@ -125,6 +125,7 @@ router.post('/login', [
           { expiresIn: '12h' }
         );
 
+        console.log('token: ', token);
         return res
           .cookie('jwt', token, {
             httpOnly: true, // to disable accessing cookie via client side js
