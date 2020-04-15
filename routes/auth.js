@@ -42,6 +42,7 @@ passport.use(
         })
         .catch((error) => {
           console.error('user.validatePassword error: ', error);
+          return done(error);
         });
     });
   })
