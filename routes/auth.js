@@ -29,15 +29,20 @@ passport.use(
         });
       }
 
-      return user.validatePassword(password).then((passwordValid) => {
-        if (!passwordValid) {
-          return done(null, false, {
-            message: 'Incorrect username or password.',
-          });
-        }
+      return user
+        .validatePassword(password)
+        .then((passwordValid) => {
+          if (!passwordValid) {
+            return done(null, false, {
+              message: 'Incorrect username or password.',
+            });
+          }
 
-        return done(null, user);
-      });
+          return done(null, user);
+        })
+        .catch((error) => {
+          console.error('user.validatePassword error: ', error);
+        });
     });
   })
 );
@@ -77,18 +82,8 @@ passport.use(
 
 /* POST auth login. */
 router.post('/login', [
-  check('username')
-    .exists()
-    .notEmpty()
-    .isString()
-    .trim()
-    .escape(),
-  check('password')
-    .exists()
-    .notEmpty()
-    .isString()
-    .trim()
-    .escape(),
+  check('username').exists().notEmpty().isString().trim().escape(),
+  check('password').exists().notEmpty().isString().trim().escape(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -149,7 +144,7 @@ router.post('/login', [
 
 // authorize with jwt cookie if exist
 router.post('/', (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, function(err, user) {
+  passport.authenticate('jwt', { session: false }, function (err, user) {
     console.log('user: ', user);
     if (err) {
       return next(err);
@@ -166,10 +161,7 @@ router.post('/', (req, res, next) => {
 // logout user by removing existing jwt cookie
 // TODO: invalidate jwt token (token blacklist stored in redis)
 router.post('/logout', (req, res) => {
-  return res
-    .clearCookie('jwt')
-    .status(200)
-    .json({ ok: true });
+  return res.clearCookie('jwt').status(200).json({ ok: true });
 });
 
 module.exports = router;
