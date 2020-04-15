@@ -22,6 +22,7 @@ const cookieExtractor = (req) => {
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username }).then((user) => {
+      console.log('user found in db: ', user);
       if (!user) {
         return done(null, false, {
           message: 'Incorrect username or password.',
@@ -99,6 +100,7 @@ router.post('/login', [
   },
   (req, res, next) =>
     passport.authenticate('local', { session: false }, (err, user) => {
+      console.log('user local: ', user);
       if (err) {
         return next(err);
       }
@@ -129,7 +131,7 @@ router.post('/login', [
         return res
           .cookie('jwt', token, {
             httpOnly: true, // to disable accessing cookie via client side js
-            // secure: process.env.NODE_ENV === 'production', // to force https
+            secure: process.env.NODE_ENV === 'production', // to force https
             maxAge: 43200000, // 12h ttl in ms (remove this option and cookie will die when browser is closed)
             signed: true, // if you use the secret with cookieParser
           })

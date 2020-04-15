@@ -37,7 +37,6 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 const app = express();
-console.log('TEST CORS WHITELIST: ', process.env.CORS_WHITELIST);
 const corsWhitelist = process.env.CORS_WHITELIST.split(' ');
 
 app.use(helmet());
