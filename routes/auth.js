@@ -5,6 +5,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const router = express.Router();
+const debug = require('debug')('auth');
 
 // MODELS
 const User = require('../models/user');
@@ -40,8 +41,9 @@ passport.use(
           return done(null, user);
         })
         .catch((error) => {
-          console.error('user.validatePassword error: ', error);
-          return done(error);
+          return done(null, false, {
+            message: `Validation error: ${error.message}`,
+          });
         });
     });
   })
@@ -95,9 +97,10 @@ router.post('/login', [
   },
   (req, res) =>
     passport.authenticate('local', { session: false }, (error, user) => {
+      debug(`/login | passport.auth > local | user: ${user}`);
       if (error) {
-        console.error('Passport authenticate error: ', error);
-        return res.status(404).json(error);
+        debug(`/login | passport.auth > local | error: ${error.message}`);
+        return res.status(404).json({ error });
       }
       if (!user) {
         return res
@@ -107,7 +110,10 @@ router.post('/login', [
 
       req.login(user, { session: false }, (error) => {
         if (error) {
-          return res.status(404).json(error);
+          debug(
+            `/login | passport.auth > local > req.login | error: ${error.message}`
+          );
+          return res.status(404).json({ error });
         }
 
         // Generate jwt token for user and return it in response
@@ -122,6 +128,13 @@ router.post('/login', [
           process.env.JWT_SECRET,
           { expiresIn: '12h' }
         );
+
+        if (!token) {
+          `/login | passport.auth > local > Token is undefined`;
+          return res
+            .status(404)
+            .json({ error: 'Auth error! Unable to generate token' });
+        }
 
         return res
           .cookie('jwt', token, {
