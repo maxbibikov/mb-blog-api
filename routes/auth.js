@@ -32,6 +32,8 @@ passport.use(
       return user
         .validatePassword(password)
         .then((passwordValid) => {
+          debug(`PASSPORT local strategy > pasport valid: ${passwordValid}`);
+          console.log('passwordValid: ', passwordValid);
           if (!passwordValid) {
             return done(null, false, {
               message: 'Incorrect username or password.',
