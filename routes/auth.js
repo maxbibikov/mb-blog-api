@@ -22,7 +22,6 @@ const cookieExtractor = (req) => {
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username }).then((user) => {
-      console.log('user found in db: ', user);
       if (!user) {
         return done(null, false, {
           message: 'Incorrect username or password.',
@@ -96,9 +95,8 @@ router.post('/login', [
   },
   (req, res) =>
     passport.authenticate('local', { session: false }, (error, user) => {
-      console.log('user local: ', user);
       if (error) {
-        console.log('Passport authenticate error: ', error);
+        console.error('Passport authenticate error: ', error);
         return res.status(404).json(error);
       }
       if (!user) {
@@ -125,7 +123,6 @@ router.post('/login', [
           { expiresIn: '12h' }
         );
 
-        console.log('token: ', token);
         return res
           .cookie('jwt', token, {
             httpOnly: true, // to disable accessing cookie via client side js
@@ -133,7 +130,7 @@ router.post('/login', [
             maxAge: 43200000, // 12h ttl in ms (remove this option and cookie will die when browser is closed)
             signed: true, // if you use the secret with cookieParser
           })
-          .status(201)
+          .status(200)
           .json({
             id: user._id,
             username: user.username,
@@ -148,7 +145,6 @@ router.post('/login', [
 // authorize with jwt cookie if exist
 router.post('/', (req, res, next) => {
   passport.authenticate('jwt', { session: false }, function (error, user) {
-    console.log('user: ', user);
     if (error) {
       return res.status(404).json(error);
     }
