@@ -32,7 +32,7 @@ passport.use(
       return user
         .validatePassword(password)
         .then((passwordValid) => {
-          debug(`PASSPORT local strategy > pasport valid: ${passwordValid}`);
+          debug(`PASSPORT local strategy > password valid: ${passwordValid}`);
           console.log('passwordValid: ', passwordValid);
           if (!passwordValid) {
             return done(null, false, {
@@ -132,7 +132,7 @@ router.post('/login', [
         );
 
         if (!token) {
-          `/login | passport.auth > local > Token is undefined`;
+          debug(`/login | passport.auth > local > Token is undefined`);
           return res
             .status(404)
             .json({ error: 'Auth error! Unable to generate token' });
