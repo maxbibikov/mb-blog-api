@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('blog-api:server');
 const http = require('http');
+const https = require('https');
 
 /**
  * Get port from environment and store in Express.
@@ -19,7 +20,16 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+const server =
+  process.env.NODE_ENV === 'secure-local'
+    ? https.createServer(
+        {
+          key: process.env.SSL_KEY.replace(/\\n/g, '\n'),
+          cert: process.env.SSL_CERT.replace(/\\n/g, '\n'),
+        },
+        app
+      )
+    : http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -58,9 +68,7 @@ function onError(error) {
     throw error;
   }
 
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -82,8 +90,6 @@ function onError(error) {
  */
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }

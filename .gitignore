@@ -69,3 +69,11 @@ typings/
 !.elasticbeanstalk/*.global.yml
 .ebextensions/*
 
+# ssl cert and key
+server.cert
+server.key
+cert.pem
+cert.key
+# openssl cert config
+req.cnf
+
