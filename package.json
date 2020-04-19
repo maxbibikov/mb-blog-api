@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node bin/www",
     "devstart": "nodemon bin/www",
-    "debug": "DEBUG=blog-api npm run devstart"
+    "debug": "DEBUG=blog-api npm run devstart",
+    "test": "mocha",
+    "coverage": "nyc --reporter=html --reporter=text npm run test"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -26,8 +28,14 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "nodemon": "^2.0.2"
+    "mocha": "^7.1.1",
+    "mongodb-memory-server": "^6.5.2",
+    "nodemon": "^2.0.2",
+    "nyc": "^15.0.1",
+    "sinon-chai": "^3.5.0",
+    "supertest": "^4.0.2"
   },
   "engines": {
     "node": "12.14.1"
