@@ -161,67 +161,7 @@ router.post('/login', [
           });
         });
     });
-
-    // next();
   },
-  // (req, res) =>
-  //   passport.authenticate('local', { session: false }, (error, user) => {
-  //     debug(`/login | passport.auth > local | user: ${user}`);
-  //     if (error) {
-  //       debug(`/login | passport.auth > local | error: ${error.message}`);
-  //       return res.status(404).json({ error });
-  //     }
-  //     if (!user) {
-  //       return res
-  //         .status(400)
-  //         .json({ error: { message: 'Incorrect username or password' } });
-  //     }
-
-  //     req.login(user, { session: false }, (error) => {
-  //       if (error) {
-  //         debug(
-  //           `/login | passport.auth > local > req.login | error: ${error.message}`
-  //         );
-  //         return res.status(404).json({ error });
-  //       }
-
-  //       // Generate jwt token for user and return it in response
-  //       const token = jwt.sign(
-  //         {
-  //           id: user._id,
-  //           username: user.username,
-  //           firstName: user.firstName,
-  //           lastName: user.lastName,
-  //           role: user.role,
-  //         },
-  //         process.env.JWT_SECRET,
-  //         { expiresIn: '12h' }
-  //       );
-
-  //       if (!token) {
-  //         debug(`/login | passport.auth > local > Token is undefined`);
-  //         return res
-  //           .status(404)
-  //           .json({ error: 'Auth error! Unable to generate token' });
-  //       }
-
-  //       return res
-  //         .cookie('jwt', token, {
-  //           httpOnly: true, // to disable accessing cookie via client side js
-  //           secure: true, // to force https
-  //           maxAge: 43200000, // 12h ttl in ms (remove this option and cookie will die when browser is closed)
-  //           signed: true, // if you use the secret with cookieParser
-  //         })
-  //         .status(200)
-  //         .json({
-  //           id: user._id,
-  //           username: user.username,
-  //           firstName: user.firstName,
-  //           lastName: user.lastName,
-  //           role: user.role,
-  //         });
-  //     });
-  //   })(req, res),
 ]);
 
 // authorize with jwt cookie if exist
