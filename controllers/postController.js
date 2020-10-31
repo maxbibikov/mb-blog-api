@@ -39,8 +39,8 @@ exports.post_create = [
   check('picture', 'Picture is not valid')
     .optional()
     .isString()
-    .trim()
-    .escape(),
+    .notEmpty()
+    .trim(),
   check('published', 'Published is not valid').isBoolean().trim().escape(),
   check('category', 'Category is not valid')
     .exists()
@@ -117,11 +117,7 @@ exports.post_update = [
     .isLength({ min: 10, max: 3000 })
     .trim()
     .escape(),
-  check('picture', 'Picture is not valid')
-    .optional()
-    .isString()
-    .trim()
-    .escape(),
+  check('picture', 'Picture is not valid').optional().isString().trim(),
   check('published', 'Published is not valid').isBoolean().trim().escape(),
   check('category', 'Category is not valid')
     .exists()
