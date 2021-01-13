@@ -16,26 +16,6 @@ const authRouter = require('./routes/auth');
 const postsRouter = require('./routes/posts');
 const categoriesRouter = require('./routes/categories');
 
-// // DB CONNECTION
-// const dbUrl = process.env.DB_URL || process.env.DB_URL_DEV;
-
-// if (!dbUrl) {
-//   throw Error(
-//     'Database url undefined. Set DB_URL and DB_URL_DEV env variables'
-//   );
-// }
-
-// mongoose.connect(dbUrl, {
-//   useNewUrlParser: true,
-//   useFindAndModify: false,
-//   useCreateIndex: true,
-//   useUnifiedTopology: true,
-// });
-
-// const db = mongoose.connection;
-
-// db.on('error', console.error.bind(console, 'connection error:'));
-
 const app = express();
 const corsWhitelist = process.env.CORS_WHITELIST.split(' ');
 
